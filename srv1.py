@@ -1,5 +1,15 @@
-import datetime, os, webuntis.objects
+import datetime, os, webuntis.objects, logging
 from dotenv import load_dotenv
+
+logging.basicConfig(
+    filename="srv.log",
+    encoding="utf-8",
+    level=logging.INFO,
+    filemode="a",
+    format="{asctime} - {levelname} - {message}",
+    style="{",
+    datefmt="%Y-%m-%d %H:%M",
+)
 
 load_dotenv()
 SRV = os.getenv('SRV')
@@ -24,8 +34,9 @@ def gib_raum_info(raum):
     )
     s.login()
     if isinstance(s, str):
-        # KEINE DATEN JUNGE
-        print("KEINE DATEN VON RAUM ", raum)
+        logging.ERROR(f"Keine Daten von Raum ",{raum})
+    elif isinstance(s, str):
+        logging.ERROR(f"Fehlerhafte Daten von Raum", {raum})
     else:
         rooms = s.rooms().filter(name=raum)
 
@@ -45,10 +56,17 @@ def gib_raum_info(raum):
             c = "(" + po.code + ")" if po.code is not None else ""
 
             if chtime < e:
-                print(s + "-" + e, k, sub, t, r, c)
+                try:
+                    print(s + "-" + e, k, sub, t, r, c)
+                except IndexError:
+                    logging.error(f"Fehler im Belegungsplan von Raum {raum}")
+        logging.info(f"Daten von Raum {raum} erhalten ...")
 
 def main():
+    gib_raum_info("2.304")
+    gib_raum_info("2.306")
     gib_raum_info("2.311")
+
 
 if __name__ == "__main__":
     main()
