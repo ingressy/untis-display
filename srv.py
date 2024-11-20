@@ -18,7 +18,7 @@ PWD = os.getenv('PWD')
 SHO = os.getenv('SHO')
 USRA = os.getenv('USRA')
 
-HOST = '127.0.0.1'
+HOST = '127.0.0.2'
 PORT = 2450
 
 time = datetime.datetime.now()
